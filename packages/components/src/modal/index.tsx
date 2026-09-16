@@ -20,6 +20,7 @@ import { __ } from '@wordpress/i18n';
 import { close } from '@wordpress/icons';
 import { getScrollContainer } from '@wordpress/dom';
 import { withIgnoreIMEEvents } from '@wordpress/keycodes';
+import warning from '@wordpress/warning';
 import * as ariaHelper from './aria-helper';
 import Button from '../button';
 import StyleProvider from '../style-provider';
@@ -69,6 +70,27 @@ function UnforwardedModal(
 	const headingId = title
 		? `components-modal-header-${ instanceId }`
 		: aria.labelledby;
+
+	// Only reference the heading when it is actually rendered.
+	const isHeadingRendered = !! title && ! __experimentalHideHeader;
+	// Fall back to the title as an `aria-label` when its heading is hidden.
+	const ariaLabel =
+		contentLabel ?? ( ! isHeadingRendered ? title : undefined );
+	let ariaLabelledBy;
+	if ( ariaLabel ) {
+		ariaLabelledBy = undefined;
+	} else if ( isHeadingRendered ) {
+		ariaLabelledBy = headingId;
+	} else {
+		ariaLabelledBy = aria.labelledby;
+	}
+
+	// Dev-only warning; every dialog needs an accessible name.
+	if ( ! ariaLabel && ! ariaLabelledBy ) {
+		warning(
+			'Modal: the dialog has no accessible name. Provide a `title`, `contentLabel`, or `aria.labelledby` prop.'
+		);
+	}
 
 	// The focus hook does not support 'firstContentElement' but this is a valid
 	// value for the Modal's focusOnMount prop. The following code ensures the focus
@@ -269,8 +291,8 @@ function UnforwardedModal(
 							: null,
 					] ) }
 					role={ role }
-					aria-label={ contentLabel }
-					aria-labelledby={ contentLabel ? undefined : headingId }
+					aria-label={ ariaLabel }
+					aria-labelledby={ ariaLabelledBy }
 					aria-describedby={ aria.describedby }
 					tabIndex={ -1 }
 					onKeyDown={ onKeyDown }

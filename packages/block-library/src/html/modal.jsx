@@ -73,6 +73,7 @@ export default function HTMLEditModal( { onRequestClose, content, onUpdate } ) {
 		<>
 			<Modal
 				title={ __( 'Edit HTML' ) }
+				contentLabel={ __( 'Edit HTML' ) }
 				onRequestClose={ onRequestClose }
 				className="block-library-html__modal"
 				size="large"

@@ -13,6 +13,15 @@ globalThis.wpVitest.mockMatchMedia();
 const noop = () => {};
 
 describe( 'Modal', () => {
+	it( 'warns in development when the modal has no accessible name', () => {
+		render(
+			<Modal __experimentalHideHeader onRequestClose={ noop }>
+				content
+			</Modal>
+		);
+		expect( console ).toHaveWarned();
+	} );
+
 	it( 'applies the aria-describedby attribute when provided', () => {
 		render(
 			<Modal
@@ -70,6 +79,37 @@ describe( 'Modal', () => {
 		const dialog = screen.getByRole( 'dialog' );
 		const title = within( dialog ).queryByText( 'Test Title' );
 		expect( title ).not.toBeInTheDocument();
+	} );
+
+	it( 'uses the title as aria-label when the header is hidden', () => {
+		render(
+			<Modal
+				title="Hidden header"
+				__experimentalHideHeader
+				onRequestClose={ noop }
+			>
+				content
+			</Modal>
+		);
+		const dialog = screen.getByRole( 'dialog', { name: 'Hidden header' } );
+		expect( dialog ).toBeInTheDocument();
+		expect( dialog ).not.toHaveAttribute( 'aria-labelledby' );
+	} );
+
+	it( 'falls back to aria.labelledby when the header is hidden and there is no title', () => {
+		render(
+			<Modal
+				aria={ { labelledby: 'title-id' } }
+				__experimentalHideHeader
+				onRequestClose={ noop }
+			>
+				content
+			</Modal>
+		);
+		expect( screen.getByRole( 'dialog' ) ).toHaveAttribute(
+			'aria-labelledby',
+			'title-id'
+		);
 	} );
 
 	it( 'should call onRequestClose when the escape key is pressed', async () => {
