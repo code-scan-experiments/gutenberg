@@ -152,6 +152,7 @@ export function QuickEditModal( {
 	return (
 		<Modal
 			overlayClassName="dataviews-action-modal__quick-edit"
+			contentLabel={ __( 'Quick edit' ) }
 			__experimentalHideHeader
 			onRequestClose={ closeModal }
 			focusOnMount="firstElement"

@@ -146,6 +146,7 @@ export type ModalProps = {
 	/**
 	 * When set to `true`, the Modal's header (including the icon, title and
 	 * close button) will not be rendered.
+	 * The `title` is still used as the dialog's accessible name.
 	 *
 	 * _Warning_: This property is still experimental. “Experimental” means this
 	 * is an early implementation subject to drastic and breaking changes.
