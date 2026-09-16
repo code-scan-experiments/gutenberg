@@ -73,10 +73,9 @@ function UnforwardedModal(
 
 	// Only reference the heading when it is actually rendered.
 	const isHeadingRendered = !! title && ! __experimentalHideHeader;
+	// Fall back to the title as an `aria-label` when its heading is hidden.
 	const ariaLabel =
-		contentLabel ??
-		( ! isHeadingRendered ? title : undefined ) ??
-		undefined;
+		contentLabel ?? ( ! isHeadingRendered ? title : undefined );
 	let ariaLabelledBy;
 	if ( ariaLabel ) {
 		ariaLabelledBy = undefined;
@@ -86,6 +85,7 @@ function UnforwardedModal(
 		ariaLabelledBy = aria.labelledby;
 	}
 
+	// Dev-only warning; every dialog needs an accessible name.
 	if ( ! ariaLabel && ! ariaLabelledBy ) {
 		warning(
 			'Modal: the dialog has no accessible name. Provide a `title`, `contentLabel`, or `aria.labelledby` prop.'
