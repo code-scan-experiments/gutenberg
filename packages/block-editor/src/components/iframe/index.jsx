@@ -206,6 +206,9 @@ function Iframe( {
 			documentElement.classList.add( 'block-editor-iframe__html' );
 
 			contentDocument.dir = ownerDocument.dir;
+			// Mirror the admin document's language so assistive technology
+			// announces canvas content in the correct language (WCAG 3.1.1).
+			documentElement.lang = ownerDocument.documentElement.lang;
 
 			for ( const compatStyle of getCompatibilityStyles() ) {
 				if ( contentDocument.getElementById( compatStyle.id ) ) {
